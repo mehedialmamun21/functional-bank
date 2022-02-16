@@ -22,7 +22,7 @@ function updateBalance(amount, isAdd) {
     const balanceTotal = document.getElementById('balance-total');
     const balanceText = balanceTotal.innerText;
     const c = parseFloat(balanceText);
-    balanceTotal.innerText = c + amount;
+
     if (isAdd == true) {
         balanceTotal.innerText = c + amount;
     }
