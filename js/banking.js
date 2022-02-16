@@ -1,4 +1,5 @@
 function getInputValue(inputId) {
+    //debugger;
     const inputField = document.getElementById(inputId);
     const inputAmountText = inputField.value;
     const amountValue = parseFloat(inputAmountText);
@@ -18,16 +19,23 @@ function updateTotalField(totalFieldId, amount) {
     totalElement.innerText = amount + previousTotal;
 }
 
-function updateBalance(amount, isAdd) {
+function getCurrentBalance() {
     const balanceTotal = document.getElementById('balance-total');
     const balanceText = balanceTotal.innerText;
-    const c = parseFloat(balanceText);
+    const previousBalanceTotal = parseFloat(balanceText);
+    return previousBalanceTotal;
+}
 
+function updateBalance(amount, isAdd) {
+    const balanceTotal = document.getElementById('balance-total');
+    /*const balanceText = balanceTotal.innerText;
+    const previousBalanceTotal = parseFloat(balanceText);*/
+    const previousBalanceTotal = getCurrentBalance();
     if (isAdd == true) {
-        balanceTotal.innerText = c + amount;
+        balanceTotal.innerText = previousBalanceTotal + amount;
     }
     else {
-        balanceTotal.innerText = c - amount;
+        balanceTotal.innerText = previousBalanceTotal - amount;
     }
 }
 
@@ -35,13 +43,13 @@ function updateBalance(amount, isAdd) {
 document.getElementById('deposit-button').addEventListener('click', function () {
 
     const depoFunRes = getInputValue('deposit-input');
+    if (depoFunRes > 0) {
+        // get and update deposit total
+        updateTotalField('deposit-total', depoFunRes);
 
-    // get and update deposit total
-    updateTotalField('deposit-total', depoFunRes);
-
-    //update balance
-    updateBalance(depoFunRes, true);
-
+        //update balance
+        updateBalance(depoFunRes, true);
+    }
 });
 
 // withdraw money
@@ -49,9 +57,16 @@ document.getElementById('withdraw-button').addEventListener('click', function ()
 
     const withdrFunRes = getInputValue('withdraw-input');
 
-    // get and update withdraw total
-    updateTotalField('withdraw-total', withdrFunRes);
+    const previousBalanceTotal = getCurrentBalance();
 
-    //update balance
-    updateBalance(withdrFunRes, false);
+    if (withdrFunRes <= previousBalanceTotal && withdrFunRes > 0) {
+        // get and update withdraw total
+        updateTotalField('withdraw-total', withdrFunRes);
+
+        //update balance
+        updateBalance(withdrFunRes, false);
+    }
+    if (withdrFunRes > previousBalanceTotal) {
+        console.log("You cann't Withdraw more than your existing Balance")
+    }
 });
